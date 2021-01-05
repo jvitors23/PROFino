@@ -2,6 +2,8 @@
 A simple profiler for Arduino.
 
 # Dependencies
+* avr-gcc
+* avrdude
 * serial (python) - pip install serial
 
 # Usage 
@@ -14,7 +16,7 @@ A simple profiler for Arduino.
 
 ## //TODO:
 - [ ] Create basic project structure
-- [ ] Serial communication
+- [x] Serial communication
 - [ ] Communication protocol
 - [ ] Instrument the code
 - [ ] ...
