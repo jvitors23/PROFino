@@ -1,9 +1,4 @@
-# ----------------------------------------------------------------------------
-# Makefile based on WinAVR Makefile Template written by Eric B. Weddington, 
-# J�rg Wunsch, et al.
-#
-# Adjust F_CPU below to the clock frequency in Mhz of your AVR target
-#
+
 # Adjust the size of the uart receive and transmit ringbuffer in bytes using 
 # defines -DUART_RX_BUFFER_SIZE=128 and -DUART_TX_BUFFER_SIZE=128 in the 
 # CDEF section below
@@ -38,8 +33,6 @@ MCU = atmega328p
 
 MICROCONTROLLER = m328p
 
-USBPORT = 
-
 
 # Processor frequency.
 #     This will define a symbol, F_CPU, in all source code files equal to the 
@@ -55,7 +48,7 @@ FORMAT = ihex
 TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c uart.c
+SRC = $(TARGET).c comm/uart.c
 
 # List Assembler source files here.
 #     Make them always end in a capital .S.  Files ending in a lowercase .s
@@ -84,7 +77,7 @@ DEBUG = dwarf-2
 #     Each directory must be seperated by a space.
 #     Use forward slashes for directory separators.
 #     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS = 
+EXTRAINCDIRS = comm
 
 
 # Compiler flag to set the C Standard level.
@@ -162,8 +155,6 @@ SCANF_LIB =
 
 MATH_LIB = -lm
 
-
-
 #---------------- External Memory Options ----------------
 
 # 64 KB of external RAM, starting after internal RAM (ATmega128!),
@@ -175,7 +166,6 @@ MATH_LIB = -lm
 #EXTMEMOPTS = -Wl,--defsym=__heap_start=0x801100,--defsym=__heap_end=0x80ffff
 
 EXTMEMOPTS =
-
 
 
 #---------------- Linker Options ----------------

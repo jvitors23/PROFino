@@ -3,17 +3,18 @@
 #include <util/delay.h>
 
 #include "main.h"
-#include "uart.h"
+#include "comm/uart.h"
 
-int main(void) {    
+int main(void) { 
+  uart_init();
+  stdout = &uart_output;
+  _delay_ms(5000);   
 
-    uart_init();
-    stdout = &uart_output;
-    _delay_ms(2000);
     while(1) {
-      puts("Hello world!");
+      puts("Hello world!sdadasdasdasdasdsad");
       _delay_ms(1000);
+     
     }
-        
+    
     return 0;
 }
