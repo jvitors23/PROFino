@@ -2,21 +2,25 @@
 A simple profiler for Arduino.
 
 # Dependencies
-* avr-gcc
-* avrdude
-* serial (python) - pip install serial
+* avr-libc ```apt install avr-libc```
+* avrdude ```apt install avrdude```
+* serial (python) - ```pip install serial```
 
 # Usage 
 
-## Build
-```make```
+```./PROFino.py source.c```
 
-## Upload to arduino
-```make program```
+or
+
+```python PROFino.py source.c```
 
 ## //TODO:
-- [ ] Create basic project structure
+- [x] Create basic project structure
 - [x] Serial communication
-- [ ] Communication protocol
+- [x] Define communication protocol
+- [ ] Implement communication protocol
+- [ ] Test communication protocol
+- [ ] Define instrumentation aproach
 - [ ] Instrument the code
+- [ ] User interface
 - [ ] ...
