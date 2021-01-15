@@ -16,17 +16,21 @@
 //   printf("<== %s\n", __func__);
 // }
 
+void teste(){
+  int a = 0; 
+}
 
 int main(void) { 
   uart_init();
   stdout = &uart_output;
-  _delay_ms(5000);   
+  _delay_ms(2000);   
 
-    while(1) {
-      puts("Jose");
-      _delay_ms(1000);
-     
+    while(1) {      
+      printf("%p\n", main);
+      _delay_ms(1000);     
     }
+
+    
     
     return 0;
 }

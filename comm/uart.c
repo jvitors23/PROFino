@@ -12,10 +12,8 @@
 
 /* http://www.cs.mun.ca/~rod/Winter2007/4723/notes/serial/serial.html */
 
-// void(* resetFunc) (void) = 0; //declare reset function @ address 0
-
 void uart_init(void) {
-    // resetFunc();
+
     UBRR0H = UBRRH_VALUE;
     UBRR0L = UBRRL_VALUE;
     

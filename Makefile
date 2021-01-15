@@ -4,6 +4,7 @@ SRC = $(TARGET).c comm/uart.c
 OBJ = $(SRC:.c=.o)
 EXTRAINCDIRS = comm
 CC = avr-gcc
+NM = avr-nm
 OBJCOPY = avr-objcopy
 AVRDUDE = avrdude
 REMOVE = rm -f
@@ -19,10 +20,10 @@ AVRDUDE_PROGRAMMER = arduino
 BAUD_RATE = 115200
 AVRDUDE_PORT = /dev/ttyACM0
 
-all: elf hex
+all: elf sym hex
 
 elf: $(TARGET).elf
-
+sym: $(TARGET).sym
 hex: $(TARGET).hex
   
 program: $(TARGET).hex
@@ -30,6 +31,9 @@ program: $(TARGET).hex
 
 %.hex: %.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
+
+%.sym: %.elf
+	$(NM) -n $< > $@
 
 %.elf: $(OBJ)
 	$(CC) -mmcu=$(MCU) $^ -o $@
@@ -41,4 +45,5 @@ clean: clean_list
 clean_list :
 	$(REMOVE) $(TARGET).hex
 	$(REMOVE) $(TARGET).elf
+	$(REMOVE) $(TARGET).sym
 	$(REMOVE) $(OBJ)
