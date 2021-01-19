@@ -1,8 +1,9 @@
-#include <stdio.h>
-#include <avr/io.h>
 #include <util/delay.h>
-#include "comm/uart.h"
-
+// #include"comm/send.h"
+#include <stdio.h>
+#include"comm/uart.h"
+#include <util/delay.h>
+#include <time.h>
 // void __cyg_profile_func_enter(void *this_fn, void *call_site)__attribute__((no_instrument_function));
 // void __cyg_profile_func_exit(void *this_fn, void *call_site)__attribute__((no_instrument_function)); 
 
@@ -20,13 +21,14 @@ void teste(){
   int a = 0; 
 }
 
-int main(void) { 
+int main(void) {
   uart_init();
   stdout = &uart_output;
   _delay_ms(2000);   
 
-    while(1) {      
-      printf("%p\n", main);
+    while(1) {  
+     
+      // send((char*)&main, )
       _delay_ms(1000);     
     }
 

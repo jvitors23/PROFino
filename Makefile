@@ -1,6 +1,6 @@
 # CONFIG
 TARGET = main
-SRC = $(TARGET).c comm/uart.c
+SRC = $(TARGET).c comm/uart.c 
 OBJ = $(SRC:.c=.o)
 EXTRAINCDIRS = comm
 CC = avr-gcc
