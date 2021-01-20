@@ -4,7 +4,7 @@ A simple profiler for Arduino.
 # Dependencies
 * avr-libc ```apt install avr-libc```
 * avrdude ```apt install avrdude```
-* ctags ```apt install exuberant-ctags```
+* ctags-universal ```apt install universal-ctags```
 * serial (python) - ```pip install serial```
 
 # Usage 
