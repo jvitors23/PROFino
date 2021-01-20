@@ -5,6 +5,9 @@ try:
 except:
     print('Please check the port')
 
+def receive_message():
+    
+
 def clean(L):#L is a list
     newl=[] #initialising the new list
     for i in range(len(L)):
@@ -16,8 +19,8 @@ def clean(L):#L is a list
 while True:
     rawdata=[]
     rawdata.append(str(arduino.readline()))
-    cleandata=clean(rawdata)
-    print(cleandata)
+    msg=clean(rawdata)[0]
+    receive(msg)
 
 
     

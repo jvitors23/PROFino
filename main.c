@@ -11,7 +11,7 @@
 //   printf("--> %p %p\n", this_fn, call_site);
 //   printf("==> %s\n", __func__);
 // }
-
+void teste();
 // void __cyg_profile_func_exit(void *this_fn, void *call_site) {
 //   printf("<-- %p %p\n", this_fn, call_site);
 //   printf("<== %s\n", __func__);
