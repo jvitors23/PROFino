@@ -60,7 +60,6 @@ def instrument(filename):
   instf.write('#include <util/delay.h>\n')
   instf.write('#include <stdio.h>\n')
   instf.write('#include "comm/uart.h"\n')
-  instf.write('#include "comm/send.h"\n')
   instf.write('#include <avr/io.h>\n')
   instf.write('#include <avr/interrupt.h>\n\n')
   instf.write('volatile uint16_t timer_overflow_count;\n')

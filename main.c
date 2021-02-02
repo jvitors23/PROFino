@@ -1,28 +1,35 @@
-void teste(){
-  for (int i = 0; i < 1000; i++)  {
-    for (int j = 0; j < 1000; j++)  {
-      for (int k = 0; k < 1000; k++)  {
-        int a;
+int teste(){
+  int a;
+  for (int i = 0; i < 10000; i++)  {
+    for (int j = 0; j < 10000; j++)  {
+      for (int k = 0; k < 10000; k++)  {
+        a = i+j+k;
       }
     }
-  }  
+  } 
+
+  return a; 
 }
-
-// int main(void){ 
-
-//   for (int i = 0; i < 10; i++) {
-//     teste();
-//   }
-
-//   return 0;
-// }
-
 
 int main(void){ 
-
-  while(1) {
-    teste();
+  int tot;
+  for (int i = 0; i < 10; i++) {
+    int a = teste();
+    tot = a;
+    tot = tot - 2700;
   }
-  
+
   return 0;
 }
+
+
+// int main(void){ 
+//   int tot = 0;
+//   while(1) {
+//     int a = teste();
+//     tot = a;
+//     tot = tot - 2700;
+//   }
+  
+//   return 0;
+// }

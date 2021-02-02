@@ -21,4 +21,4 @@ def compile_and_upload_to_arduino(target):
             stderr=subprocess.STDOUT)
   stdout, stderr = out.communicate()
   print(stdout.decode("utf-8"))
-#   os.remove(target+'.c')
+  os.remove(target+'.c')
