@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 def find_functions(filename): 
   out = subprocess.Popen(['ctags-universal', '--c-types=f','-o', '-', '--fields=+ne', filename], 
@@ -41,11 +42,14 @@ def find_functions(filename):
   return functions_list
 
 def getEntryFunctionCode(): 
-  code = 'printf("Entrando na funcao: %s'+'\\'+'n"'+', __func__);'
+  code = 'printf("========:%d:%d:%s:%d:========' + '\\' + 'n", timer_overflow_count, timer_overflow_count_overflow, __func__, 1);'
+
+  # code = 'printf("Entrando na funcao: %s'+'\\'+'n"'+', __func__);'
   return code
 
 def getExitFunctionCode(): 
-  code = 'printf("Saindo da funcao: %s'+'\\'+'n"'+', __func__);'
+  code = 'printf("========:%d:%d:%s:%d:========' + '\\' + 'n", timer_overflow_count, timer_overflow_count_overflow, __func__, 0);'
+  # code = 'printf("Saindo da funcao: %s'+'\\'+'n"'+', __func__);'
   return code
 
 def instrument(filename):  
@@ -56,6 +60,26 @@ def instrument(filename):
   instf.write('#include <stdio.h>\n')
   instf.write('#include "comm/uart.h"\n')
   instf.write('#include "comm/send.h"\n')
+  instf.write('#include <avr/io.h>\n')
+  instf.write('#include <avr/interrupt.h>\n\n')
+  instf.write('volatile uint16_t timer_overflow_count;\n')
+  instf.write('volatile uint16_t timer_overflow_count_overflow;\n\n')
+  instf.write('void timer0_init(){\n')
+  instf.write('\tTCCR0B |= (1 << CS02);\n')
+  instf.write('\tTCNT0 = 0;\n')
+  instf.write('\tTIMSK0 |= (1 << TOIE0);\n')
+  instf.write('\tsei();\n')
+  instf.write('\ttimer_overflow_count = 0;\n')
+  instf.write('\ttimer_overflow_count_overflow = 0;\n')
+  instf.write('}\n\n')
+  instf.write('ISR(TIMER0_OVF_vect){\n')
+  instf.write('\ttimer_overflow_count++;\n')
+  instf.write('\tif (timer_overflow_count >= 32000){\n')
+  instf.write('\t\ttimer_overflow_count_overflow++;\n')
+  instf.write('\t\ttimer_overflow_count = 0;\n')
+  instf.write('\t}\n')
+  instf.write('}\n')
+
   with open(filename, 'r') as file: 
     lines = file.readlines()
     for i in range(len(lines)): 
@@ -74,7 +98,7 @@ def instrument(filename):
       if change: 
         if pos == 'start': 
           if main: 
-            prepare_comm = 'uart_init();\nstdout = &uart_output;\n_delay_ms(2000);\nputs("inicio");\nputs("inicio");\nputs("inicio");'
+            prepare_comm = 'uart_init();\nstdout = &uart_output;\n_delay_ms(3000);\nputs("=======:inicio:=======");\nputs("=======:inicio:=======");\nputs("=======:inicio:=======");\ntimer0_init();\n'
             lines [i] = lines[i] + prepare_comm + '\n' + getEntryFunctionCode() + '\n'
           else:  
             lines [i] = lines[i] + getEntryFunctionCode() + '\n'
@@ -89,18 +113,5 @@ def instrument(filename):
     instf.writelines(lines)
   instf.close()
 
-  # compile instrumented file
-  inst_target = instrumented_filename.split('.')[0]
-  out = subprocess.Popen(['make', 'TARGET='+inst_target], 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.STDOUT)
-  stdout, stderr = out.communicate()
-  print(stdout.decode("utf-8"))
 
-  #upload to arduino
-  out = subprocess.Popen(['make', 'program', 'TARGET='+inst_target], 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.STDOUT)
-  stdout, stderr = out.communicate()
-  print(stdout.decode("utf-8"))
 
