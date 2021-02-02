@@ -8,21 +8,11 @@ void teste(){
   }  
 }
 
-// int main(void){ 
-
-//   for (int i = 0; i < 10; i++) {
-//     teste();
-//   }
-
-//   return 0;
-// }
-
-
 int main(void){ 
-
-  while(1) {
+  
+  for (int i = 0; i < 10; i++) {
     teste();
   }
-  
+
   return 0;
 }

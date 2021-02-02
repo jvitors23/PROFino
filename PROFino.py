@@ -7,11 +7,11 @@ import subprocess
 
 # Instrumentar o programa de entrada
 filename = sys.argv[1]
-instrument(filename)
+functions = instrument(filename)
 
 # Compilar o arquivo instrumentado e fazer upload pro arduino
 inst_target = filename.split('.')[0]+'inst'
 compile_and_upload_to_arduino(inst_target)
 
 # Iniciar monitoramento
-monitor()
+monitor(functions)

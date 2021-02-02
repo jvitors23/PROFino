@@ -17,6 +17,7 @@ def find_functions(filename):
       'name': elts[0], 
       'start_line': int(elts[4].split(':')[1]) - 1,
       'end_line': int(elts[6].split(':')[1]) - 1
+
     })
 
   with open(filename, 'r') as file: 
@@ -112,6 +113,8 @@ def instrument(filename):
     
     instf.writelines(lines)
   instf.close()
+
+  return functions
 
 
 
