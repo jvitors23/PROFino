@@ -1,11 +1,6 @@
+#include <stdint.h>
 #include <stdio.h>
-#include "uart.h"
-#include <avr/io.h>
 
-void send(char* address, int clock, char type){
-  int checksum = 0;
-  // Add calculo do checksum
-  printf("$%s@%d@%c#%d\n", address, clock, type, checksum);
-  
+void send(char *func_name, uint32_t clock, uint8_t type) {
+	printf("$%s@%llu@%d#\n", func_name, clock, type);
 }
-
