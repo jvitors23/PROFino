@@ -18,12 +18,15 @@ def monitor(functions):
 	
 	call_stack = []
 	func_monitor = {}
+
 	for func in functions: 
 		func_monitor[func['name']] = {
 			'calls': 0, 
 			'time': 0
 		}
+	
 
+	exec_history = []
 	iniCount = 0
 	tempoInicial = 0
 	last_overflow_counter = 0
@@ -32,12 +35,13 @@ def monitor(functions):
 	iteracoes = 0
 	start = False
 	ini_interval = 0
+
 	while True:
 		rawdata=[]
 		rawdata.append(str(arduino.readline()))
 		msg = clean(rawdata)[0]
 		
-		if msg != '' and len(msg.split(':')) > 0 and msg.split(':')[1] == 'inicio':
+		if msg != '' and len(msg.split(':')) > 1 and msg.split(':')[1] == 'inicio':
 			iniCount += 1
 		if iniCount == 3 and not start:
 			ini_interval = time.time()
@@ -54,13 +58,31 @@ def monitor(functions):
 			timestamp = overflow_counter*32000*4.096/1000 + overflow*4.096/1000
 			if tipo == 1: 
 				func_monitor[func_name]['calls'] += 1
-				# print('entrando em '+func_name+ ' - tempo atual ' + str(timestamp) + 's')
+
+				if func_name != 'main':
+					exec_history.append({
+						'function': call_stack[-1][0], 
+						't_ini': call_stack[-1][1],
+						't_fim': timestamp 
+					})
+					func_monitor[call_stack[-1][0]]['time'] += (timestamp - call_stack[-1][1])
+				
 				call_stack.append([func_name, timestamp])
+
 			else:
 				if func_name != 'main':
 					last_func_entry = call_stack.pop()
+					exec_history.append({
+						'function': func_name, 
+						't_ini': last_func_entry[1],
+						't_fim': timestamp 
+					})
+					# o tempo de entrada da função anterior passa a ser o atual
+					call_stack[-1][1] = timestamp
+
 					func_monitor[func_name]['time'] += (timestamp - last_func_entry[1])
-					# print('saindo de '+func_name+ ' - tempo atual ' + str(timestamp) + 's')
+		
+		# print(exec_history)
 
 		if start and (time.time() - ini_interval) >= 5 : 
 			print("\033c")
@@ -68,17 +90,17 @@ def monitor(functions):
 			print('function\t\tcalls\t\t\ttime (s)\t\t\ttime (%)')
 			print('-----------------------------------------------------------------------------------------------')
 			
-			tot_time = 0
-			for f in func_monitor.keys():
-				if f != 'main':
-					tot_time += func_monitor[f]['time']
+			# tot_time = 0
+			# for f in func_monitor.keys():
+			# 	if f != 'main':
+			# 		tot_time += func_monitor[f]['time']
 
 			for func in func_monitor.keys():
-				if func == 'main': 
-					tempo_main = timestamp - tot_time 
-					print('main\t\t\t1\t\t\t' + str(tempo_main)[0:8] +'\t\t\t'+ str((tempo_main/timestamp)*100)[0:8])
-				else:
-					print(func +'\t\t\t'+ str(func_monitor[func]['calls']) + '\t\t\t' + str(func_monitor[func]['time'])[0:8]+'\t\t\t'+str((func_monitor[func]['time']/timestamp)*100)[0:8] )
+				# if func == 'main': 
+				# 	tempo_main = timestamp - tot_time 
+				# 	print('main\t\t\t1\t\t\t' + str(tempo_main)[0:8] +'\t\t\t'+ str((tempo_main/timestamp)*100)[0:8])
+				# else:
+				print(func +'\t\t\t'+ str(func_monitor[func]['calls']) + '\t\t\t' + str(func_monitor[func]['time'])[0:8]+'\t\t\t'+str((func_monitor[func]['time']/timestamp)*100)[0:8] )
 
 			ini_interval = time.time()
 			print('-----------------------------------------------------------------------------------------------')

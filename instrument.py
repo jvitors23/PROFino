@@ -44,13 +44,10 @@ def find_functions(filename):
 
 def getEntryFunctionCode(): 
   code = 'printf("========:%d:%d:%s:%d:========' + '\\' + 'n", timer_overflow_count, timer_overflow_count_overflow, __func__, 1);'
-
-  # code = 'printf("Entrando na funcao: %s'+'\\'+'n"'+', __func__);'
   return code
 
 def getExitFunctionCode(): 
   code = 'printf("========:%d:%d:%s:%d:========' + '\\' + 'n", timer_overflow_count, timer_overflow_count_overflow, __func__, 0);'
-  # code = 'printf("Saindo da funcao: %s'+'\\'+'n"'+', __func__);'
   return code
 
 def instrument(filename):  
