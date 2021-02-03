@@ -13,11 +13,14 @@ def find_functions(filename):
   
   for f in functions: 
     elts = f.split('\t')
+    k = 4
+    if '$' in elts[3]:
+      k = 5
+
     functions_list.append({
       'name': elts[0], 
-      'start_line': int(elts[4].split(':')[1]) - 1,
-      'end_line': int(elts[6].split(':')[1]) - 1
-
+      'start_line': int(elts[k].split(':')[1]) - 1,
+      'end_line': int(elts[k+2].split(':')[1]) - 1
     })
 
   with open(filename, 'r') as file: 

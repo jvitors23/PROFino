@@ -45,7 +45,7 @@ def monitor(functions):
 			iniCount += 1
 		if iniCount == 3 and not start:
 			ini_interval = time.time()
-			print('[INFO] - Iniciando motiramento')
+			print('[INFO] - Iniciando monitoramento')
 			start = True	
 			tempoInicial = time.time()
 			continue
@@ -90,16 +90,7 @@ def monitor(functions):
 			print('function\t\tcalls\t\t\ttime (s)\t\t\ttime (%)')
 			print('-----------------------------------------------------------------------------------------------')
 			
-			# tot_time = 0
-			# for f in func_monitor.keys():
-			# 	if f != 'main':
-			# 		tot_time += func_monitor[f]['time']
-
 			for func in func_monitor.keys():
-				# if func == 'main': 
-				# 	tempo_main = timestamp - tot_time 
-				# 	print('main\t\t\t1\t\t\t' + str(tempo_main)[0:8] +'\t\t\t'+ str((tempo_main/timestamp)*100)[0:8])
-				# else:
 				print(func +'\t\t\t'+ str(func_monitor[func]['calls']) + '\t\t\t' + str(func_monitor[func]['time'])[0:8]+'\t\t\t'+str((func_monitor[func]['time']/timestamp)*100)[0:8] )
 
 			ini_interval = time.time()
