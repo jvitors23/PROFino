@@ -19,9 +19,10 @@ or
 - [x] Create basic project structure
 - [x] Serial communication
 - [x] Define communication protocol
-- [ ] Implement communication protocol
-- [ ] Test communication protocol
-- [ ] Define instrumentation aproach
-- [ ] Instrument the code
+- [x] Implement communication protocol
+- [x] Test communication protocol
+- [x] Define instrumentation aproach
+- [x] Instrument the code
+- [ ] Collect execution data
 - [ ] User interface
 - [ ] ...
