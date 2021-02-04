@@ -1,6 +1,6 @@
 #include <stdio.h> 
 #include <stdlib.h>
-#define TAM 20
+#define TAM 15
 int particiona(int arr[],int ini, int fim){
 	int pivot = arr[fim], i=ini, j=fim;	
 	while(i<j){		
@@ -27,10 +27,10 @@ void quickSort(int arr[], int ini,int fim){
 }
 int main(){	
 	srand(23);
-	int arr[TAM];	
-	for(int i=0; i<TAM; i++){
-    arr[i]= rand()%100;	
-  }
+	int arr[TAM] = {6, 3, 17, 54, 33, 12, 78, 1, 4, 22, 56, 34, 2, 65, 43};;	
+	// for(int i=0; i<TAM; i++){
+  //   arr[i]= rand()%100;	
+  // }
 	quickSort(arr, 0, TAM-1);		
   return 0;
 }
