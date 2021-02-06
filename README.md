@@ -9,11 +9,11 @@ A simple profiler for Arduino.
 
 # Usage 
 
-```./PROFino.py -c source.c -p /dev/ttyXXX```
+```./PROFino.py -c source.c -p /dev/ttyXXXX```
 
 or
 
-```python PROFino.py -c source.c -p /dev/ttyXXX```
+```python PROFino.py -c source.c -p /dev/ttyXXXX```
 
 ## //TODO:
 - [x] Create basic project structure
