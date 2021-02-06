@@ -1,17 +1,14 @@
 #!/usr/bin/python3
-from instrument import *
-from monitor import *
-from make import *
-import sys 
-import subprocess
+import sys, subprocess
+import instrument, make, monitor
 
-# Instrumentar o programa de entrada
-filename = sys.argv[1]
-functions = instrument(filename)
+def main():
+	filename = sys.argv[1]
+	source = filename.split('.')[0] + 'inst'
 
-# Compilar o arquivo instrumentado e fazer upload pro arduino
-inst_target = filename.split('.')[0]+'inst'
-compile_and_upload_to_arduino(inst_target)
+	functions = instrument.instrument(filename) # Instrumenta o código-fonte original
+	make.run(source) # Compila o código-fonte instrumentado e faz upload para o Arduino
+	monitor.monitor(functions) # Inicia o 'live-profiling' do código instrumentado sendo executado no Arduino
 
-# Iniciar monitoramento
-monitor(functions)
+if __name__ == '__main__':
+	main()
