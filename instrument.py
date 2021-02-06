@@ -34,15 +34,6 @@ def find_functions(filename):
             func['start_line'] = i 
             break
 
-  # with open(filename.replace(".c", ".sym")) as f: 
-  #   lines = f.readlines()
-  #   for line in lines: 
-  #     name = line.replace('\n', '').split(' ')[2]
-  #     address = line.replace('\n', '').split(' ')[0]
-  #     for f in functions_list:       
-  #       if f['name'] == name: 
-  #         f['address'] = address
-
   return functions_list
 
 def getEntryFunctionCode(): 
