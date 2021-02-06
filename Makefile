@@ -25,10 +25,9 @@ BAUD_RATE = 115200
 AVRDUDE_PORT = /dev/ttyACM0 # TODO: UTILIZAR ALTERNATIVA NÃO ESTÁTICA PARA RECONHECIMENTO DA PORTA
 
 # Targets and recipes
-all: elf sym hex
+all: elf hex
 
 elf: $(TARGET).elf
-sym: $(TARGET).sym
 hex: $(TARGET).hex
   
 program: $(TARGET).hex
@@ -36,9 +35,6 @@ program: $(TARGET).hex
 
 %.hex: %.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
-
-%.sym: %.elf
-	$(NM) -n $< > $@
 
 %.elf: $(OBJ)
 	$(CC) -mmcu=$(MCU) $^ -o $@
@@ -50,5 +46,4 @@ clean: clean_list
 clean_list :
 	$(REMOVE) $(TARGET).hex
 	$(REMOVE) $(TARGET).elf
-	$(REMOVE) $(TARGET).sym
 	$(REMOVE) $(OBJ)
