@@ -26,11 +26,10 @@ void quickSort(int arr[], int ini,int fim){
 	}	
 }
 int main(){	
-	srand(23);
-	int arr[TAM] = {6, 3, 17, 54, 33, 12, 78, 1, 4, 22, 56, 34, 2, 65, 43};;	
-	// for(int i=0; i<TAM; i++){
-  //   arr[i]= rand()%100;	
-  // }
+	int arr[TAM] = {6, 3, 17, 54, 33, 12, 78, 1, 4, 22, 56, 34, 2, 65, 43};	
 	quickSort(arr, 0, TAM-1);		
   return 0;
 }
+
+
+
