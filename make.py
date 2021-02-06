@@ -1,24 +1,26 @@
-import subprocess
-import os
+import os, subprocess
 
-def compile_and_upload_to_arduino(target):
-  
-  out = subprocess.Popen(['make', 'TARGET='+target], 
-          stdout=subprocess.PIPE, 
-          stderr=subprocess.STDOUT)
+# Executa um source especificado do Makefile
+def all(source):
+  compile(source)
+  upload(source)
+  clean(source)
+
+
+def compile(source):
+  out = subprocess.Popen(['make', 'SOURCE=' + source], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   stdout, stderr = out.communicate()
   print(stdout.decode("utf-8"))
 
-  #upload to arduino
-  out = subprocess.Popen(['make', 'program', 'TARGET='+target], 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.STDOUT)
+
+def upload(source):
+  out = subprocess.Popen(['make', 'program', 'SOURCE=' + source], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   stdout, stderr = out.communicate()
   print(stdout.decode("utf-8"))
 
-  out = subprocess.Popen(['make', 'clean', 'TARGET='+target], 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.STDOUT)
+
+def clean(source):
+  out = subprocess.Popen(['make', 'clean', 'SOURCE=' + source], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   stdout, stderr = out.communicate()
   print(stdout.decode("utf-8"))
-  os.remove(target+'.c')
+  os.remove(source+'.c')
