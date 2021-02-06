@@ -1,6 +1,3 @@
-#include <avr/io.h>
-#include <stdio.h>
-
 #ifndef F_CPU
 #define F_CPU 16000000UL
 #endif
@@ -8,12 +5,13 @@
 #ifndef BAUD
 #define BAUD 9600
 #endif
+
 #include <util/setbaud.h>
+#include <avr/io.h>
+#include <stdio.h>
 
-/* http://www.cs.mun.ca/~rod/Winter2007/4723/notes/serial/serial.html */
 
-void uart_init(void) {
-
+void uart_init() {
     UBRR0H = UBRRH_VALUE;
     UBRR0L = UBRRL_VALUE;
     
@@ -28,9 +26,9 @@ void uart_init(void) {
 }
 
 void uart_putchar(char c, FILE *stream) {
-    if (c == '\n') {
+    if (c == '\n')
         uart_putchar('\r', stream);
-    }
+    
     loop_until_bit_is_set(UCSR0A, UDRE0);
     UDR0 = c;
 }
