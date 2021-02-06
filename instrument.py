@@ -46,7 +46,7 @@ def getExitFunctionCode():
 
 def instrument(filename):  
   functions = find_functions(filename)
-  instrumented_filename = filename.split('.')[0]+'inst.c'
+  instrumented_filename = filename.split('.')[0]+'.inst.c'
   instf = open(instrumented_filename, 'w')
   instf.write('#include <util/delay.h>\n')
   instf.write('#include <stdio.h>\n')
