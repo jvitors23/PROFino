@@ -1,8 +1,8 @@
 .PHONY: all clean
 
 # Files and dirs
-TARGET = main
-SRC = $(TARGET).c comm/uart.c 
+SOURCE = main
+SRC = $(SOURCE).c comm/uart.c 
 OBJ = $(SRC:.c=.o)
 EXTRAINCDIRS = comm
 
@@ -27,11 +27,11 @@ AVRDUDE_PORT = /dev/ttyACM0 # TODO: UTILIZAR ALTERNATIVA NÃO ESTÁTICA PARA REC
 # Targets and recipes
 all: elf hex
 
-elf: $(TARGET).elf
-hex: $(TARGET).hex
+elf: $(SOURCE).elf
+hex: $(SOURCE).hex
   
-program: $(TARGET).hex
-	$(AVRDUDE) -c $(AVRDUDE_PROGRAMMER) -p $(MICROCONTROLLER) -P $(AVRDUDE_PORT) -b $(BAUD_RATE) -D -U flash:w:$(TARGET).hex:i
+program: $(SOURCE).hex
+	$(AVRDUDE) -c $(AVRDUDE_PROGRAMMER) -p $(MICROCONTROLLER) -P $(AVRDUDE_PORT) -b $(BAUD_RATE) -D -U flash:w:$(SOURCE).hex:i
 
 %.hex: %.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
@@ -44,6 +44,6 @@ program: $(TARGET).hex
 
 clean: clean_list 
 clean_list :
-	$(REMOVE) $(TARGET).hex
-	$(REMOVE) $(TARGET).elf
+	$(REMOVE) $(SOURCE).hex
+	$(REMOVE) $(SOURCE).elf
 	$(REMOVE) $(OBJ)
