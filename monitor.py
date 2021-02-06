@@ -1,5 +1,6 @@
 import serial
 import time
+from tabulate import tabulate
 
 def clean(L):
 	newl=[] 
@@ -84,25 +85,33 @@ def monitor(functions):
 		
 		# print(exec_history)
 
-		if start and (time.time() - ini_interval) >= 5 : 
+		if start and (time.time() - ini_interval) >= 2 : 
 			print("\033c")
 
 			print("\
-				__________ ___________ _             \n\
+				___________ ___________  _             \n\
 				| ___ \ ___ \  _  |  ___(_)           \n \
 				| |_/ / |_/ / | | | |_   _ _ __   ___  \n\
 				|  __/|    /| | | |  _| | | '_ \ / _ \ \n\
 				| |   | |\ \  \_/ / |   | | | | | (_) |\n\
 				\_|   \_| \_|\___/\_|   |_|_| |_|\___/ ")														
 			
-			print('===============================================================================================')
-			print('function\t\tcalls\t\t\ttime (s)\t\t\ttime (%)')
-			print('-----------------------------------------------------------------------------------------------')
-			
+		
+			print_list = []
+			maior = 0
 			for func in func_monitor.keys():
-				print(func +'\t\t\t'+ str(func_monitor[func]['calls']) + '\t\t\t' + str(func_monitor[func]['time'])[0:8]+'\t\t\t'+str((func_monitor[func]['time']/timestamp)*100)[0:8] )
+				if len(func) > maior: 
+					maior = len(func)
+				print_list.append([func,str(func_monitor[func]['calls']), str(func_monitor[func]['time'])[0:8], str((func_monitor[func]['time']/timestamp)*100)[0:8]])
+
+			print('===========================================================================================')
+			print('{0:<{1}}{2:<25}{3:<25}{4:<25}'.format('function', maior + 10, 'calls', 'time (s)', 'time(%)'))
+			print('-------------------------------------------------------------------------------------------')
+
+			for func in print_list:
+				print('{0:<{1}}{2:<25}{3:<25}{4:<25}'.format(func[0], maior + 10, func[1], func[2], func[3]))
 
 			ini_interval = time.time()
-			print('-----------------------------------------------------------------------------------------------')
+			print('-------------------------------------------------------------------------------------------')
 			print('total execution time (s) ' + str(timestamp)[0:8])
-			print('===============================================================================================')
+			print('===========================================================================================')
