@@ -27,7 +27,6 @@ def monitor(functions):
 		}
 	
 
-	exec_history = []
 	iniCount = 0
 	tempoInicial = 0
 	last_overflow_counter = 0
@@ -61,11 +60,7 @@ def monitor(functions):
 				func_monitor[func_name]['calls'] += 1
 
 				if func_name != 'main':
-					exec_history.append({
-						'function': call_stack[-1][0], 
-						't_ini': call_stack[-1][1],
-						't_fim': timestamp 
-					})
+					
 					func_monitor[call_stack[-1][0]]['time'] += (timestamp - call_stack[-1][1])
 				
 				call_stack.append([func_name, timestamp])
@@ -73,17 +68,12 @@ def monitor(functions):
 			else:
 				if func_name != 'main':
 					last_func_entry = call_stack.pop()
-					exec_history.append({
-						'function': func_name, 
-						't_ini': last_func_entry[1],
-						't_fim': timestamp 
-					})
+					
 					# o tempo de entrada da função anterior passa a ser o atual
 					call_stack[-1][1] = timestamp
-
+					
 					func_monitor[func_name]['time'] += (timestamp - last_func_entry[1])
-		
-		# print(exec_history)
+	
 
 		if start and (time.time() - ini_interval) >= 2 : 
 			print("\033c")
