@@ -1,0 +1,19 @@
+        -:    0:Source:fatorial.c
+        -:    0:Graph:fatorial.gcno
+        -:    0:Data:fatorial.gcda
+        -:    0:Runs:1
+        7:    1:int fatR(int n){
+        6:    2:  if ( n <= 1 )
+        -:    3:    return 1;
+        5:    4:  int res = n * fatR(n - 1);
+        5:    5:  return res;  
+        -:    6:}
+        1:    7:int main(void){
+        1:    8:  int fat;
+        1:    9:  fat = fatR(7);  
+        1:   10:  float nada = 0; 
+        1:   11:  if(fat > 30)
+        -:   12:    nada = fat/2; 
+        1:   13:  return 0;
+        -:   14:}
+        -:   15:

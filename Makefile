@@ -16,7 +16,7 @@ REMOVE = rm -f
 # GCC Flags
 MCU = atmega328p
 F_CPU = 16000000UL
-COMPILE_CFLAGS = -Os -mmcu=$(MCU) -DF_CPU=$(F_CPU)
+COMPILE_CFLAGS = -Os -mmcu=$(MCU) -DF_CPU=$(F_CPU) 
 
 # AVRDUDE Flags
 MICROCONTROLLER = m328p

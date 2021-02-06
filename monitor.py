@@ -19,35 +19,27 @@ def monitor(functions, port):
 	
 	call_stack = []
 	func_monitor = {}
+	iniCount = 0
+	timestamp = 0
+	start = False
+	ini_interval = 0
 
 	for func in functions: 
 		func_monitor[func['name']] = {
 			'calls': 0, 
 			'time': 0
-		}
-	
-
-	iniCount = 0
-	tempoInicial = 0
-	last_overflow_counter = 0
-	tempoFinal = 0
-	timestamp = 0
-	iteracoes = 0
-	start = False
-	ini_interval = 0
+		}	
 
 	while True:
 		rawdata=[]
 		rawdata.append(str(arduino.readline()))
 		msg = clean(rawdata)[0]
-		
 		if msg != '' and len(msg.split(':')) > 1 and msg.split(':')[1] == 'inicio':
 			iniCount += 1
 		if iniCount == 3 and not start:
 			ini_interval = time.time()
 			print('[INFO] - Iniciando monitoramento')
 			start = True	
-			tempoInicial = time.time()
 			continue
 
 		if start and msg != '':
@@ -58,26 +50,18 @@ def monitor(functions, port):
 			timestamp = overflow_counter*32000*4.096/1000 + overflow*4.096/1000
 			if tipo == 1: 
 				func_monitor[func_name]['calls'] += 1
-
-				if func_name != 'main':
-					
+				if func_name != 'main':					
 					func_monitor[call_stack[-1][0]]['time'] += (timestamp - call_stack[-1][1])
-				
 				call_stack.append([func_name, timestamp])
-
 			else:
-				last_func_entry = call_stack.pop()
-				
+				last_func_entry = call_stack.pop()				
 				# o tempo de entrada da função anterior passa a ser o atual
 				if func_name != 'main':
-					call_stack[-1][1] = timestamp
-				
+					call_stack[-1][1] = timestamp				
 				func_monitor[func_name]['time'] += (timestamp - last_func_entry[1])
 	
-
 		if start and (time.time() - ini_interval) >= 2 : 
 			print("\033c")
-
 			print("\
 				___________ ___________  _             \n\
 				| ___ \ ___ \  _  |  ___(_)           \n \
@@ -86,7 +70,6 @@ def monitor(functions, port):
 				| |   | |\ \  \_/ / |   | | | | | (_) |\n\
 				\_|   \_| \_|\___/\_|   |_|_| |_|\___/ ")														
 			
-		
 			print_list = []
 			maior = 0
 			for func in func_monitor.keys():

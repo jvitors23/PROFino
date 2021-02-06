@@ -13,14 +13,20 @@ def find_functions(filename):
   
   for f in functions: 
     elts = f.split('\t')
-    k = 4
-    if '$' in elts[3]:
-      k = 5
-
+    start_line = 0
+    end_line = 0
+    
+    # pega a linha de inicio e de fim na saída do c-tags universal 
+    for item in elts: 
+      if 'line' in item: 
+        start_line = int(item.split(':')[1])
+      if 'end' in item: 
+        end_line = int(item.split(':')[1])
+    
     functions_list.append({
       'name': elts[0], 
-      'start_line': int(elts[k].split(':')[1]) - 1,
-      'end_line': int(elts[k+2].split(':')[1]) - 1
+      'start_line':  start_line - 1,
+      'end_line':  end_line - 1
     })
 
   with open(filename, 'r') as file: 

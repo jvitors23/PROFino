@@ -46,7 +46,7 @@ int teste1(int tot){
 int main(void){ 
   int tot = 0;
   int i = 0;
-  while(i<100) {
+  while(1) {
     int a = teste1(tot);
     tot = a;
     tot = tot - 2700;
