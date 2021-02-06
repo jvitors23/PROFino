@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, getopt, shutil
+import os, sys, getopt, shutil
 import instrument, make, monitor
 
 # Valida se os parâmetros foram passados corretamente pela linha de comando
@@ -31,21 +31,21 @@ def evaluate_args():
 
 # ...
 def main():
-	filename, port = evaluate_args()
+	filepath, port = evaluate_args()
+	
+	if '/' in filepath:
+		shutil.copy(filepath, './')
+		filename = filepath.split('/')[-1]
+	else:
+		filename = filepath
+
 	source = filename.split('.')[0] + '.inst' # "arquivo.inst.c"
-  
-  if '/' in filepath:
-    shutil.copy(filepath, './')
-    filename = filepath.split('/')[-1]
-  else:
-    filename = filepath
-  
 	functions = instrument.instrument(filename) # Instrumenta o código-fonte original
 	make.run(source, port) # Compila o código-fonte instrumentado e faz upload para o Arduino
-  
-  if '/' in filepath:
-    os.remove(filename)
-  
+	
+	if '/' in filepath:
+		os.remove(filename)
+	
 	monitor.monitor(functions, port) # Inicia o 'live-profiling' do código instrumentado sendo executado no Arduino
 
 if __name__ == '__main__':
