@@ -8,6 +8,7 @@
 
 #include <util/setbaud.h>
 #include <avr/io.h>
+#include <stdint.h>
 #include <stdio.h>
 
 
@@ -25,7 +26,7 @@ void uart_init() {
     UCSR0B = _BV(RXEN0) | _BV(TXEN0);   /* Enable RX and TX */    
 }
 
-void uart_putchar(char c, FILE *stream) {
+void uart_putchar(uint8_t c, FILE *stream) {
     if (c == '\n')
         uart_putchar('\r', stream);
     
@@ -33,7 +34,7 @@ void uart_putchar(char c, FILE *stream) {
     UDR0 = c;
 }
 
-char uart_getchar(FILE *stream) {
+uint8_t uart_getchar(FILE *stream) {
     loop_until_bit_is_set(UCSR0A, RXC0);
     return UDR0;
 }
