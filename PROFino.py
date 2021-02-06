@@ -35,8 +35,8 @@ def main():
 	source = filename.split('.')[0] + '.inst' # "arquivo.inst.c"
 
 	functions = instrument.instrument(filename) # Instrumenta o código-fonte original
-	make.run(source) # Compila o código-fonte instrumentado e faz upload para o Arduino
-	monitor.monitor(functions) # Inicia o 'live-profiling' do código instrumentado sendo executado no Arduino
+	make.run(source, port) # Compila o código-fonte instrumentado e faz upload para o Arduino
+	monitor.monitor(functions, port) # Inicia o 'live-profiling' do código instrumentado sendo executado no Arduino
 
 if __name__ == '__main__':
 	main()
