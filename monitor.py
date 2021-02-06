@@ -9,9 +9,9 @@ def clean(L):
 		newl.append(temp[:-5])
 	return newl
 
-def monitor(functions):
+def monitor(functions, port):
 	try:
-		arduino = serial.Serial("/dev/ttyACM0",timeout=1)
+		arduino = serial.Serial(port,timeout=1)
 		arduino.flushInput()
 		arduino.flushOutput()
 	except:
