@@ -1,25 +1,30 @@
-# CONFIG
+.PHONY: all clean
+
+# Files and dirs
 TARGET = main
 SRC = $(TARGET).c comm/uart.c 
 OBJ = $(SRC:.c=.o)
 EXTRAINCDIRS = comm
+
+# Toolchain
 CC = avr-gcc
 NM = avr-nm
 OBJCOPY = avr-objcopy
 AVRDUDE = avrdude
 REMOVE = rm -f
 
-# COMPILE OPTIONS
+# GCC Flags
 MCU = atmega328p
-F_CPU = 16000000
-COMPILE_CFLAGS = -Os -mmcu=$(MCU) -DF_CPU=$(F_CPU)UL
+F_CPU = 16000000UL
+COMPILE_CFLAGS = -Os -mmcu=$(MCU) -DF_CPU=$(F_CPU)
 
-# AVRDUDE OPTIONS
+# AVRDUDE Flags
 MICROCONTROLLER = m328p
 AVRDUDE_PROGRAMMER = arduino
 BAUD_RATE = 115200
-AVRDUDE_PORT = /dev/ttyACM0
+AVRDUDE_PORT = /dev/ttyACM0 # TODO: UTILIZAR ALTERNATIVA NÃO ESTÁTICA PARA RECONHECIMENTO DA PORTA
 
+# Targets and recipes
 all: elf sym hex
 
 elf: $(TARGET).elf
