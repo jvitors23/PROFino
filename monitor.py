@@ -66,13 +66,13 @@ def monitor(functions):
 				call_stack.append([func_name, timestamp])
 
 			else:
+				last_func_entry = call_stack.pop()
+				
+				# o tempo de entrada da função anterior passa a ser o atual
 				if func_name != 'main':
-					last_func_entry = call_stack.pop()
-					
-					# o tempo de entrada da função anterior passa a ser o atual
 					call_stack[-1][1] = timestamp
-					
-					func_monitor[func_name]['time'] += (timestamp - last_func_entry[1])
+				
+				func_monitor[func_name]['time'] += (timestamp - last_func_entry[1])
 	
 
 		if start and (time.time() - ini_interval) >= 2 : 
