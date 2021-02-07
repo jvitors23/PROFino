@@ -213,7 +213,7 @@ class MainWindow(QMainWindow):
                     if len(func) > maior:
                         maior = len(func)
                     print_list.append([func, str(self.func_monitor[func]['calls']), str(self.func_monitor[func]['time'])[
-                                      0:8], str((self.func_monitor[func]['time']/self.timestamp)*100)[0:8]])
+                        0:8], str((self.func_monitor[func]['time']/self.timestamp)*100)[0:8]])
                     self.func_monitor[func]['percentage'] = (
                         self.func_monitor[func]['time']/self.timestamp)*100
 
@@ -255,6 +255,8 @@ class MainWindow(QMainWindow):
 
     def displayGraph(self):
         bar_width = 0.5
+        y_resolution = 8
+
         time, percentage = [], []
         funcs = self.func_monitor.keys()
 
@@ -264,8 +266,13 @@ class MainWindow(QMainWindow):
 
         fig, ax = plt.subplots()
         bars = ax.bar(funcs, time, bar_width)
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(0.5))
-        ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+
+        tick = time[-1]/y_resolution
+        ticks = list(range(y_resolution + 1))
+        labels = [i * tick for i in ticks]
+        # labels.append(tick + labels[-1])
+        formattedlabels = ['{:.3f}'.format(i) for i in labels]
+        plt.yticks(ticks=ticks, labels=formattedlabels)
 
         for i, bar in enumerate(bars):
             ax.text(bar.get_x() + bar_width/2.0, bar.get_height(),
