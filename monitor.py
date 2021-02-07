@@ -21,6 +21,7 @@ def monitor(functions, port):
 	iniCount = 0
 	timestamp = 0
 	start = False
+	end = False
 	ini_interval = 0
 
 	for func in functions: 
@@ -56,7 +57,9 @@ def monitor(functions, port):
 				last_func_entry = call_stack.pop()				
 				# o tempo de entrada da função anterior passa a ser o atual
 				if func_name != 'main':
-					call_stack[-1][1] = timestamp				
+					call_stack[-1][1] = timestamp
+				else:
+					end = True
 				func_monitor[func_name]['time'] += (timestamp - last_func_entry[1])
 	
 		if start and (time.time() - ini_interval) >= 0.5 : 
@@ -87,3 +90,7 @@ def monitor(functions, port):
 			print('-------------------------------------------------------------------------------------------')
 			print('total execution time (s) ' + str(timestamp)[0:8])
 			print('===========================================================================================')
+
+			if end:
+				print('program finished')
+				break
