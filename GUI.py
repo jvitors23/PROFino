@@ -2,15 +2,20 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
 import shutil, instrument, monitor, make, os, time, serial
+import matplotlib.pyplot as plt
 
 class MainWindow(QMainWindow):
 	def __init__(self, filepath, port):
 		super(MainWindow, self).__init__()
 		self.filepath = filepath
 		self.port = port
+		
+		self.stop = False
+		self.func_monitor = {}
 		# setting title 
 		self.setWindowTitle('PROFino') 
-		self.resize(600, 350)
+		self.setFixedSize(600, 380)
+		
 		# calling method 
 		self.UiComponents() 
 
@@ -50,38 +55,53 @@ class MainWindow(QMainWindow):
 				QLabel(self.filepath, self)
 		self.fileNameLabel.move(270, 70) 
 
-		self.compileAndUploadBtn = QPushButton("Compile and Upload", self)
+		self.compileAndUploadBtn = QPushButton("Build and Upload", self)
 		self.compileAndUploadBtn.move(270, 20) 
 		self.compileAndUploadBtn.resize(130, 30) 
-		self.compileAndUploadBtn.clicked.connect(self.compileAndUpload)	
+		self.compileAndUploadBtn.clicked.connect(self.buildAndUpload)	
 
 		self.startProfilingBtn = QPushButton("Start Profiling", self)
-		self.startProfilingBtn.move(430, 20) 
-		self.startProfilingBtn.resize(100, 30) 
-		# self.startProfilingBtn.clicked.connect(self.startProfiling)
+		self.startProfilingBtn.move(470, 20) 
+		self.startProfilingBtn.resize(100, 30)
+		self.startProfilingBtn.setDisabled(True)
+		self.startProfilingBtn.clicked.connect(self.startProfiling)
+		
+
+		self.stopProfilingBtn = QPushButton("Stop Profiling", self)
+		self.stopProfilingBtn.move(470, 70) 
+		self.stopProfilingBtn.setDisabled(True)
+		self.stopProfilingBtn.resize(100, 30)  
+		self.stopProfilingBtn.clicked.connect(self.stopProfiling)
+
 
 		self.logLabel = QLabel("Logs:", self)
 		self.logLabel.move(20, 110) 	
 		self.logLabel.setFont(lblFont)
 
+		self.errorLabel = QLabel("", self)
+		self.errorLabel.move(270, 110) 	
+		self.errorLabel.resize(270, 20) 	
+		self.errorLabel.setStyleSheet('color: red')
+
 		self.logOutput = QTextEdit(self)
 		self.logOutput.move(20, 140)
-		self.logOutput.resize(560, 100)
+		font = QFont("Courier")
+		font.setBold(True)		
+		self.logOutput.resize(560, 220)
 		self.logOutput.setReadOnly(True)
+		self.logOutput.setFont(font)
 		self.logOutput.setLineWrapMode(QTextEdit.NoWrap)
 		self.logOutput.setText('')
 
-		font = self.logOutput.font()
-		font.setFamily("Courier")
-		font.setPointSize(10)
-
-	def compileAndUpload(self): 
-
+	def buildAndUpload(self): 
+		self.func_monitor = {}
 		if self.usbPortInput.text() == '' or self.filepath == '':
 			self.error_dialog = QErrorMessage(self)
 			self.error_dialog.setShortcutEnabled(False)
-			self.error_dialog.showMessage('You may input the source file and the USB port.')
+			self.error_dialog.showMessage('You need to input the source file and the USB port.')
 		else:
+			self.errorLabel.setText("")
+			self.startProfilingBtn.setDisabled(True)
 			self.logOutput.setText('Instrumenting...')
 			QApplication.processEvents()
 			if '/' in self.filepath:
@@ -91,13 +111,136 @@ class MainWindow(QMainWindow):
 				filename = self.filepath
 			self.port = self.usbPortInput.text()
 			source = filename.split('.')[0] + '.inst' # "arquivo.inst.c"
-			functions = instrument.instrument(filename) # Instrumenta o código-fonte original
+			self.functions = instrument.instrument(filename) # Instrumenta o código-fonte original
 			self.logOutput.setText('Compiling and uploading to Arduino...')
 			QApplication.processEvents()
 			ret = make.run(source, self.port) # Compila o código-fonte instrumentado e faz upload para o Arduino
+			if 'Error' in ret[0] or 'Error' in ret[1]:
+				self.errorLabel.setText("Error while building or uploading to Arduino!")
+				self.startProfilingBtn.setDisabled(True)
+				QApplication.processEvents()
+			else: 
+				self.startProfilingBtn.setDisabled(False)
+				QApplication.processEvents()
 			self.logOutput.setText(ret[0] + ret[1])
-		if '/' in self.filepath:
-			os.remove(filename)
+			if '/' in self.filepath:
+				os.remove(filename)
+		
+	def startProfiling(self): 
+		self.stop = False
+		self.func_monitor = {}
+		self.startProfilingBtn.setDisabled(True)
+		self.stopProfilingBtn.setDisabled(False)
+		self.logOutput.setText('Starting Profiling...')
+		QApplication.processEvents()
+
+		try:
+			arduino = serial.Serial(self.port,timeout=1)
+			arduino.flushInput()
+			arduino.flushOutput()
+		except:
+			self.logOutput.append('Please check the port')
+			QApplication.processEvents()
+
+		call_stack = []
+		self.func_monitor = {}
+		iniCount = 0
+		timestamp = 0
+		start = False
+		end = False
+		ini_interval = 0
+
+		for func in self.functions: 
+			self.func_monitor[func['name']] = {
+				'calls': 0, 
+				'time': 0, 
+				'porcentagem': 0
+			}	
+
+		while True:
+			if self.stop: 
+				break
+			rawdata=[]
+			rawdata.append(str(arduino.readline()))
+			msg = monitor.clean(rawdata)[0]
+			if msg != '' and len(msg.split(':')) > 1 and msg.split(':')[1] == 'inicio':
+				iniCount += 1
+			if iniCount == 3 and not start:
+				ini_interval = time.time()
+				start = True	
+				continue
+
+			if start and msg != '':
+				overflow = int(msg.split(":")[1])
+				overflow_counter = int(msg.split(":")[2])
+				func_name = msg.split(":")[3]
+				tipo = int(msg.split(":")[4])
+				timestamp = overflow_counter*32000*4.096/1000 + overflow*4.096/1000
+				if tipo == 1: 
+					self.func_monitor[func_name]['calls'] += 1
+					if func_name != 'main':					
+						self.func_monitor[call_stack[-1][0]]['time'] += (timestamp - call_stack[-1][1])
+					call_stack.append([func_name, timestamp])
+				else:
+					last_func_entry = call_stack.pop()				
+					# o tempo de entrada da função anterior passa a ser o atual
+					if func_name != 'main':
+						call_stack[-1][1] = timestamp
+					else:
+						end = True
+					self.func_monitor[func_name]['time'] += (timestamp - last_func_entry[1])
+		
+			if start and (time.time() - ini_interval) >= 0.5 : 
+				self.logOutput.setText("")															
+				print_list = []
+				maior = 0
+				for func in self.func_monitor.keys():
+					if len(func) > maior: 
+						maior = len(func)
+					print_list.append([func,str(self.func_monitor[func]['calls']), str(self.func_monitor[func]['time'])[0:8], str((self.func_monitor[func]['time']/timestamp)*100)[0:8]])
+					self.func_monitor[func]['porcentagem'] = (self.func_monitor[func]['time']/timestamp)*100
+
+				self.logOutput.append('====================================================================')
+				self.logOutput.append('{0:<{1}}{2:<20}{3:<20}{4:<20}'.format('function', maior + 10, 'calls', 'time (s)', 'time(%)'))
+				self.logOutput.append('--------------------------------------------------------------------')
+
+				for func in print_list:
+					self.logOutput.append('{0:<{1}}{2:<20}{3:<20}{4:<20}'.format(func[0], maior + 10, func[1], func[2], func[3]))
+
+				ini_interval = time.time()
+				self.logOutput.append('--------------------------------------------------------------------')
+				self.logOutput.append('total execution time (s) ' + str(timestamp)[0:8])
+				self.logOutput.append('====================================================================')
+				QApplication.processEvents()
+
+				if end:
+					self.logOutput.append('program finished')
+					self.stopProfilingBtn.setDisabled(True)
+					self.startProfilingBtn.setDisabled(False)
+					QApplication.processEvents()
+					self.displayGraph()
+					break
+
+
+
+	
+	def stopProfiling(self):
+		self.stop = True
+		self.logOutput.append('Profiling stopped')				
+		self.stopProfilingBtn.setDisabled(True)
+		self.startProfilingBtn.setDisabled(False)
+		QApplication.processEvents()
+		self.displayGraph()
+
+	def displayGraph(self):
+		fig = plt.figure(figsize=(10, 10))
+		ax = fig.add_axes([0,0,1,1])
+		funcs = self.func_monitor.keys()
+		porcentagens = []
+		for f in self.func_monitor.keys():
+			porcentagens.append(self.func_monitor[f]['porcentagem'])
+		ax.bar(funcs, porcentagens, )
+		plt.show()
 
 	def getfile(self):
 		file = QFileDialog.getOpenFileName(self, 'Open file', 
