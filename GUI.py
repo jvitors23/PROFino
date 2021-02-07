@@ -267,13 +267,6 @@ class MainWindow(QMainWindow):
         fig, ax = plt.subplots()
         bars = ax.bar(funcs, time, bar_width)
 
-        tick = time[-1]/y_resolution
-        ticks = list(range(y_resolution + 1))
-        labels = [i * tick for i in ticks]
-        # labels.append(tick + labels[-1])
-        formattedlabels = ['{:.3f}'.format(i) for i in labels]
-        plt.yticks(ticks=ticks, labels=formattedlabels)
-
         for i, bar in enumerate(bars):
             ax.text(bar.get_x() + bar_width/2.0, bar.get_height(),
                     '{:.2f}%'.format(percentage[i]), ha='center', va='bottom')
