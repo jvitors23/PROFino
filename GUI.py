@@ -89,6 +89,7 @@ class MainWindow(QMainWindow):
 				filename = self.filepath.split('/')[-1]
 			else:
 				filename = self.filepath
+			self.port = self.usbPortInput.text()
 			source = filename.split('.')[0] + '.inst' # "arquivo.inst.c"
 			functions = instrument.instrument(filename) # Instrumenta o código-fonte original
 			self.logOutput.setText('Compiling and uploading to Arduino...')
