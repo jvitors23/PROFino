@@ -1,6 +1,5 @@
 import serial
 import time
-from tabulate import tabulate
 
 def clean(L):
 	newl=[] 
@@ -60,7 +59,7 @@ def monitor(functions, port):
 					call_stack[-1][1] = timestamp				
 				func_monitor[func_name]['time'] += (timestamp - last_func_entry[1])
 	
-		if start and (time.time() - ini_interval) >= 2 : 
+		if start and (time.time() - ini_interval) >= 0.5 : 
 			print("\033c")
 			print("\
 				___________ ___________  _             \n\
