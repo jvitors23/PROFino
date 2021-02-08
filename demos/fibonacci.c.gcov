@@ -1,0 +1,20 @@
+        -:    0:Source:fibonacci.c
+        -:    0:Graph:fibonacci.gcno
+        -:    0:Data:fibonacci.gcda
+        -:    0:Runs:1
+        -:    1:#include <stdio.h>
+        -:    2:#include <stdlib.h>
+        -:    3:
+      143:    4:int fibonacci(int n){
+      276:    5:	if(n==0)
+        -:    6:		return 0;
+      221:    7:	if(n==1)
+        -:    8:		return 1;	
+      133:    9:	return fibonacci(n-1)+fibonacci(n-2);
+        -:   10:}
+        1:   11:int main(){		
+       11:   12:	for(int i=0; i<10; i++){
+       10:   13:		fibonacci(i); 
+        -:   14:	}	
+        1:   15:	return 0;
+        -:   16:}

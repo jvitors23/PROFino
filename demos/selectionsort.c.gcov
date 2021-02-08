@@ -1,0 +1,37 @@
+        -:    0:Source:selectionsort.c
+        -:    0:Graph:selectionsort.gcno
+        -:    0:Data:selectionsort.gcda
+        -:    0:Runs:1
+        -:    1:#include <stdio.h>
+        -:    2:#include <stdlib.h>
+        -:    3:#define TAM 15
+       14:    4:void troca(int arr[], int i, int j){
+       14:    5:	int temp = arr[i];
+       14:    6:	arr[i] = arr[j];
+       14:    7:	arr[j]=temp;
+       14:    8:}
+       14:    9:int menorArr(int arr[], int ini, int fim){
+       14:   10:	int menor = arr[ini];
+       14:   11:	int indice = ini;
+      119:   12:	for(int i = ini; i<fim; i++){
+      105:   13:		if(arr[i]<=menor){
+       35:   14:			menor = arr[i];
+       35:   15:			indice = i;
+        -:   16:		}		
+        -:   17:	}	
+       14:   18:	return indice;	
+        -:   19:}
+        1:   20:void selectionSort(int arr[], int ini,int fim){
+       15:   21:	if(ini<fim){
+       14:   22:		int menor = menorArr(arr, ini, fim);
+       14:   23:		troca(arr, menor, ini);
+       14:   24:		ini++;
+       14:   25:		selectionSort(arr, ini, fim);		
+        -:   26:	}	
+        1:   27:	return;
+        -:   28:}
+        1:   29:int main(){	
+        1:   30:	int arr[TAM] = {6, 3, 17, 54, 33, 12, 78, 1, 4, 22, 56, 34, 2, 65, 43};	
+        1:   31:	selectionSort(arr, 0, TAM-1);		
+        1:   32:  return 0;
+        -:   33:}

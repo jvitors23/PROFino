@@ -6,6 +6,7 @@ from GUI import initGUI
 # Exibe a mensagem de ajuda caso os argumentos passados não sejam válidos
 def displayHelp(): 
 	print('Usage: ')
+	print('{0:<20}{1:}'.format('-h --help', 'Display this help.'))
 	print('{0:<20}{1:}'.format('-c --source', 'Path to source code.'))
 	print('{0:<20}{1:}'.format('-p --port', 'USB port where the Arduino is connected, Ex: /dev/ttyACM0, /dev/ttyUSB0.'))
 	print('{0:<20}{1:}'.format('-g --graphic', 'Flag that indicates if the program must run in GUI mode.'))
