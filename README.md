@@ -39,3 +39,6 @@ Example: `./PROFino.py -c source.c -p /dev/ttyXXXX` or `python PROFino.py -c sou
 - [x] Collect execution data
 - [x] User interface
 - [x] Displays data in graphics
+
+## Video
+https://drive.google.com/file/d/13c98j-Y4IG-9W579r95KxkXJdLuvI_3M/view?usp=sharing
